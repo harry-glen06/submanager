@@ -1,9 +1,13 @@
 import { subscriptions } from "@/lib/subscriptions"
+import { Cycle } from "@/lib/recurrence";
 import { monthlyCost } from "@/lib/recurrence";
+import { prisma } from "@/lib/prisma";
 
 
-export default function Home() {
-  const totalMonthly = subscriptions.reduce((acc, current) => acc + monthlyCost(current.amount, current.cycle), 0);
+export default async function Home() {
+  const subscriptions = await prisma.subscription.findMany();
+
+  const totalMonthly = subscriptions.reduce((acc, current) => acc + monthlyCost(current.amount, current.cycle as Cycle), 0);
 
   return (
     <main className="p-8">
@@ -11,7 +15,7 @@ export default function Home() {
       <ul>
         {subscriptions.map((sub) => (
           <li key={sub.name}>
-            {sub.name} - ${sub.amount} ({sub.cycle}) → ${monthlyCost(sub.amount, sub.cycle).toFixed(2)}/mo
+            {sub.name} - ${sub.amount} ({sub.cycle}) → ${monthlyCost(sub.amount, sub.cycle as Cycle).toFixed(2)}/mo
           </li>
         ))}
       </ul>
