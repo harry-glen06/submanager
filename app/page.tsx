@@ -8,9 +8,7 @@ import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import SignOutButton from "./sign-out-button";
 
-
 export const dynamic = "force-dynamic";
-
 
 export default async function Home() {
   const session = await auth.api.getSession({ headers: await headers() });
