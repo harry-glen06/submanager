@@ -3,6 +3,8 @@ import { Cycle } from "@/lib/recurrence";
 import { monthlyCost } from "@/lib/recurrence";
 import { prisma } from "@/lib/prisma";
 
+export const dynamic = "force-dynamic";
+
 
 export default async function Home() {
   const subscriptions = await prisma.subscription.findMany();
