@@ -3,17 +3,31 @@ import { Cycle } from "@/lib/recurrence";
 import { monthlyCost } from "@/lib/recurrence";
 import { prisma } from "@/lib/prisma";
 import { deleteSubscription, createSubscription } from "./actions";
+import { auth } from "@/lib/auth";
+import { headers } from "next/headers";
+import { redirect } from "next/navigation";
+import SignOutButton from "./sign-out-button";
+
 
 export const dynamic = "force-dynamic";
 
 
 export default async function Home() {
-  const subscriptions = await prisma.subscription.findMany();
+  const session = await auth.api.getSession({ headers: await headers() });
+  if (!session) redirect("/sign-in");
+
+  const subscriptions = await prisma.subscription.findMany({
+    where: { userId: session.user.id },
+  });
 
   const totalMonthly = subscriptions.reduce((acc, current) => acc + monthlyCost(current.amount, current.cycle as Cycle), 0);
 
   return (
     <main className="p-8">
+      <div className="flex justify-between items-center mb-6">
+        <span className="text-sm text-gray-500">Signed in as {session.user.name}</span>
+        <SignOutButton/>
+      </div>
       <h1 className="text-2xl font-bold mb-4">My Subscriptions</h1>
       <ul>
         {subscriptions.map((sub) => (
