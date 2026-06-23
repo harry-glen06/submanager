@@ -5,6 +5,7 @@ import { auth } from "@/lib/auth";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import SignOutButton from "./sign-out-button";
+import ThemeToggle from "./theme-toggle";
 
 export const dynamic = "force-dynamic";
 
@@ -19,7 +20,7 @@ const cycleWord: Record<Cycle, string> = {
 };
 
 const field =
-  "w-full rounded-lg border border-stone-200 bg-white px-3 py-2 text-sm text-stone-900 placeholder-stone-400 focus:border-emerald-600 focus:outline-none focus:ring-1 focus:ring-emerald-600";
+  "w-full rounded-lg border border-stone-200 bg-white px-3 py-2 text-sm text-stone-900 placeholder-stone-400 focus:border-emerald-600 focus:outline-none focus:ring-1 focus:ring-emerald-600 dark:border-stone-700 dark:bg-stone-900 dark:text-stone-100 dark:placeholder-stone-500";
 
 export default async function Home() {
   const session = await auth.api.getSession({ headers: await headers() });
@@ -36,7 +37,7 @@ export default async function Home() {
   const totalAnnual = totalMonthly * 12;
 
   return (
-    <main className="min-h-screen bg-stone-50 text-stone-900">
+    <main className="min-h-screen bg-stone-50 text-stone-900 dark:bg-stone-950 dark:text-stone-100">
       <div className="mx-auto max-w-2xl px-6 py-10">
 
         <div className="flex items-center justify-between">
@@ -44,57 +45,58 @@ export default async function Home() {
             <span className="h-4 w-4 rounded-sm bg-emerald-700" />
             <span className="font-semibold tracking-tight">SubManager</span>
           </div>
-          <div className="flex items-center gap-3 text-sm text-stone-500">
+          <div className="flex items-center gap-3 text-sm text-stone-500 dark:text-stone-400">
+            <ThemeToggle />
             <span>Signed in as {session.user.name}</span>
-            <span className="text-stone-300">·</span>
+            <span className="text-stone-300 dark:text-stone-600">·</span>
             <SignOutButton />
           </div>
         </div>
 
         <div className="mt-12">
-          <p className="text-xs font-medium uppercase tracking-widest text-stone-400">
+          <p className="text-xs font-medium uppercase tracking-widest text-stone-400 dark:text-stone-500">
             Your monthly spend
           </p>
           <p className="mt-3 font-mono text-6xl font-semibold tabular-nums tracking-tight">
             {money(totalMonthly)}
           </p>
-          <p className="mt-3 text-sm text-stone-500">
-            That's <span className="font-mono tabular-nums text-stone-700">{money(totalAnnual)}</span> a
+          <p className="mt-3 text-sm text-stone-500 dark:text-stone-400">
+            That's <span className="font-mono tabular-nums text-stone-700 dark:text-stone-300">{money(totalAnnual)}</span> a
             year across {subscriptions.length} subscription{subscriptions.length !== 1 ? "s" : ""}.
           </p>
         </div>
 
-        <h2 className="mt-12 mb-3 text-xs font-medium uppercase tracking-widest text-stone-400">
+        <h2 className="mt-12 mb-3 text-xs font-medium uppercase tracking-widest text-stone-400 dark:text-stone-500">
           Subscriptions
         </h2>
         {subscriptions.length === 0 ? (
-          <div className="rounded-2xl border border-dashed border-stone-300 bg-white px-5 py-10 text-center text-sm text-stone-500">
+          <div className="rounded-2xl border border-dashed border-stone-300 bg-white px-5 py-10 text-center text-sm text-stone-500 dark:border-stone-700 dark:bg-stone-900 dark:text-stone-400">
             No subscriptions yet. Add your first one below.
           </div>
         ) : (
-          <ul className="divide-y divide-stone-100 overflow-hidden rounded-2xl border border-stone-200 bg-white shadow-sm">
+          <ul className="divide-y divide-stone-100 overflow-hidden rounded-2xl border border-stone-200 bg-white shadow-sm dark:divide-stone-800 dark:border-stone-800 dark:bg-stone-900">
             {subscriptions.map((sub) => (
               <li key={sub.id} className="flex items-center gap-4 px-5 py-4">
                 <div className="min-w-0 flex-1">
                   <div className="flex items-center gap-2">
                     <span className="truncate font-medium">{sub.name}</span>
-                    <span className="rounded-full bg-stone-100 px-2 py-0.5 text-xs font-medium uppercase tracking-wide text-stone-500">
+                    <span className="rounded-full bg-stone-100 px-2 py-0.5 text-xs font-medium uppercase tracking-wide text-stone-500 dark:bg-stone-800 dark:text-stone-400">
                       {sub.cycle}
                     </span>
                   </div>
-                  <div className="mt-0.5 font-mono text-xs tabular-nums text-stone-400">
+                  <div className="mt-0.5 font-mono text-xs tabular-nums text-stone-400 dark:text-stone-500">
                     {money(sub.amount)} / {cycleWord[sub.cycle as Cycle]}
                   </div>
                 </div>
                 <div className="font-mono text-base font-semibold tabular-nums">
                   {money(monthlyCost(sub.amount, sub.cycle as Cycle))}
-                  <span className="font-normal text-stone-400">/mo</span>
+                  <span className="font-normal text-stone-400 dark:text-stone-500">/mo</span>
                 </div>
                 <form action={deleteSubscription.bind(null, sub.id)}>
                   <button
                     type="submit"
                     aria-label={`Delete ${sub.name}`}
-                    className="text-xs text-stone-300 hover:text-red-500"
+                    className="text-xs text-stone-300 hover:text-red-500 dark:text-stone-600 dark:hover:text-red-400"
                   >
                     Delete
                   </button>
@@ -104,10 +106,10 @@ export default async function Home() {
           </ul>
         )}
 
-        <h2 className="mt-12 mb-3 text-xs font-medium uppercase tracking-widest text-stone-400">
+        <h2 className="mt-12 mb-3 text-xs font-medium uppercase tracking-widest text-stone-400 dark:text-stone-500">
           Add a subscription
         </h2>
-        <div className="rounded-2xl border border-stone-200 bg-white p-5 shadow-sm">
+        <div className="rounded-2xl border border-stone-200 bg-white p-5 shadow-sm dark:border-stone-800 dark:bg-stone-900">
           <form action={createSubscription}>
             <div className="flex flex-col gap-3 sm:flex-row">
               <input name="name" placeholder="Name" required className={field} />
@@ -121,7 +123,7 @@ export default async function Home() {
             </div>
             <button
               type="submit"
-              className="mt-4 w-full rounded-lg bg-emerald-700 px-4 py-2.5 text-sm font-medium text-white transition hover:bg-emerald-800 sm:w-auto"
+              className="mt-4 w-full rounded-lg bg-emerald-700 px-4 py-2.5 text-sm font-medium text-white transition hover:bg-emerald-800 sm:w-auto dark:bg-emerald-600 dark:hover:bg-emerald-500"
             >
               Add subscription
             </button>
