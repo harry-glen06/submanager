@@ -68,8 +68,8 @@ cd submanager
 npm install
 
 # 2. Create a .env file in the project root with:
-#    DATABASE_URL=DATABASE_URL="postgresql://" # your Neon connection string
-#    BETTER_AUTH_SECRET= # generate with: openssl rand -base         
+#    DATABASE_URL="postgresql://..."        # your Neon connection string
+#    BETTER_AUTH_SECRET="..."               # generate with: openssl rand -base64 32
 #    BETTER_AUTH_URL="http://localhost:3000"
 
 # 3. Set up the database and generate the client
