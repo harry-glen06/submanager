@@ -6,6 +6,7 @@ import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import SignOutButton from "./sign-out-button";
 import ThemeToggle from "./theme-toggle";
+import SubscriptionRow from "./subscription-row";
 
 export const dynamic = "force-dynamic";
 
@@ -76,32 +77,7 @@ export default async function Home() {
         ) : (
           <ul className="divide-y divide-stone-100 overflow-hidden rounded-2xl border border-stone-200 bg-white shadow-sm dark:divide-stone-800 dark:border-stone-800 dark:bg-stone-900">
             {subscriptions.map((sub) => (
-              <li key={sub.id} className="flex items-center gap-4 px-5 py-4">
-                <div className="min-w-0 flex-1">
-                  <div className="flex items-center gap-2">
-                    <span className="truncate font-medium">{sub.name}</span>
-                    <span className="rounded-full bg-stone-100 px-2 py-0.5 text-xs font-medium uppercase tracking-wide text-stone-500 dark:bg-stone-800 dark:text-stone-400">
-                      {sub.cycle}
-                    </span>
-                  </div>
-                  <div className="mt-0.5 font-mono text-xs tabular-nums text-stone-400 dark:text-stone-500">
-                    {money(sub.amount)} / {cycleWord[sub.cycle as Cycle]}
-                  </div>
-                </div>
-                <div className="font-mono text-base font-semibold tabular-nums">
-                  {money(monthlyCost(sub.amount, sub.cycle as Cycle))}
-                  <span className="font-normal text-stone-400 dark:text-stone-500">/mo</span>
-                </div>
-                <form action={deleteSubscription.bind(null, sub.id)}>
-                  <button
-                    type="submit"
-                    aria-label={`Delete ${sub.name}`}
-                    className="text-xs text-stone-300 hover:text-red-500 dark:text-stone-600 dark:hover:text-red-400"
-                  >
-                    Delete
-                  </button>
-                </form>
-              </li>
+              <SubscriptionRow key={sub.id} sub={sub} />
             ))}
           </ul>
         )}

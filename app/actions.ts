@@ -31,3 +31,20 @@ export async function createSubscription(formData: FormData) {
 
   revalidatePath("/");
 }
+
+export async function updateSubscription(id: number, formData: FormData) {
+  const session = await auth.api.getSession({ headers: await headers() });
+  if (!session) throw new Error("Not authenticated");
+
+  const name = formData.get("name") as string;
+  const amount = parseFloat(formData.get("amount") as string);
+  const cycle = formData.get("cycle") as Cycle;
+  const userId = session.user.id
+
+  await prisma.subscription.updateMany({
+    where: { id,  userId },
+    data: { name, amount, cycle },
+  });
+
+  revalidatePath("/");
+}
