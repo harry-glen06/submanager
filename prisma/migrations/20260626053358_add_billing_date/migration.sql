@@ -1,0 +1,2 @@
+-- AlterTable
+ALTER TABLE "Subscription" ADD COLUMN     "nextBillingDate" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP;

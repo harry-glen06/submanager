@@ -90,6 +90,7 @@ export default async function Home() {
             <div className="flex flex-col gap-3 sm:flex-row">
               <input name="name" placeholder="Name" required className={field} />
               <input name="amount" type="number" step="0.01" placeholder="Amount" required className={`${field} sm:w-32`} />
+              <input name="billingDate" type="date" required className={field} />
               <select name="cycle" className={`${field} sm:w-40`}>
                 <option value="weekly">weekly</option>
                 <option value="monthly">monthly</option>

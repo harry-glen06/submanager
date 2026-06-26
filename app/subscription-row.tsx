@@ -3,8 +3,12 @@
 import { useState } from "react";
 import { updateSubscription, deleteSubscription } from "./actions";
 import { monthlyCost, Cycle } from "@/lib/recurrence";
+import { date } from "better-auth";
+import { daysUntil } from "@/lib/recurrence";
+import { nextOccurrence } from "@/lib/recurrence";
 
-type Sub = { id: number; name: string; amount: number; cycle: string };
+
+type Sub = { id: number; name: string; amount: number; cycle: string; nextBillingDate: Date };
 const aud = new Intl.NumberFormat("en-AU", { style: "currency", currency: "AUD" });
 const money = (n: number) => aud.format(n);
 const cycleWord: Record<Cycle, string> = {
@@ -14,13 +18,23 @@ const cycleWord: Record<Cycle, string> = {
     yearly: "year",
 };
 
+function dueLabel(days: number): string {
+  if (days === 0) {
+    return "due today";
+  } else if (days === 1) {
+    return "due tomorrow";
+  } else {
+    return `due in ${days} days`;
+  }
+}
+
 
 export default function SubscriptionRow({ sub }: { sub: Sub }) {
   const [isEditing, setIsEditing] = useState(false);
 
   if (isEditing) {
     const field = "w-full rounded-lg border border-stone-200 bg-white px-3 py-2 text-sm text-stone-900 placeholder-stone-400 focus:border-emerald-600 focus:outline-none focus:ring-1 focus:ring-emerald-600 dark:border-stone-700 dark:bg-stone-900 dark:text-stone-100 dark:placeholder-stone-500";
-
+    
     return (
       <li className="px-5 py-4">
         <form
@@ -32,7 +46,7 @@ export default function SubscriptionRow({ sub }: { sub: Sub }) {
                 <div className="flex flex-col gap-3 sm:flex-row">
                 <input name="name" defaultValue={sub.name} required className={field} />
                 <input name="amount" defaultValue={sub.amount} type="number" step="0.01" placeholder="Amount" required className={`${field} sm:w-32`} />
-                <select name="cycle" defaultValue={sub.cycle} className={`${field} sm:w-40`}>
+                <input name="billingDate" type="date" defaultValue={new Date(sub.nextBillingDate).toISOString().split("T")[0]} required className={field} />                <select name="cycle" defaultValue={sub.cycle} className={`${field} sm:w-40`}>
                     <option value="weekly">weekly</option>
                     <option value="monthly">monthly</option>
                     <option value="quarterly">quarterly</option>
@@ -52,6 +66,7 @@ export default function SubscriptionRow({ sub }: { sub: Sub }) {
       </li>
     );
   }
+const next = daysUntil(nextOccurrence(new Date(sub.nextBillingDate), sub.cycle as Cycle));
     return (
         <li className="flex items-center gap-4 px-5 py-4">
         <div className="min-w-0 flex-1">
@@ -60,6 +75,12 @@ export default function SubscriptionRow({ sub }: { sub: Sub }) {
             <span className="rounded-full bg-stone-100 px-2 py-0.5 text-xs font-medium uppercase tracking-wide text-stone-500 dark:bg-stone-800 dark:text-stone-400">
                 {sub.cycle}
             </span>
+            </div>
+            {/* <div className="mt-0.5 text-xs text-stone-400 dark:text-stone-500">
+                Next: {new Date(sub.nextBillingDate).toLocaleDateString()}
+            </div> */}
+            <div className="mt-0.5 text-xs text-stone-400 dark:text-stone-500">
+                {dueLabel(next)}
             </div>
             <div className="mt-0.5 font-mono text-xs tabular-nums text-stone-400 dark:text-stone-500">
             {money(sub.amount)} / {cycleWord[sub.cycle as Cycle]}
