@@ -43,27 +43,42 @@ export default function SubscriptionRow({ sub }: { sub: Sub }) {
             setIsEditing(false);
           }}
         >
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 max-w-md">
-                <input name="name" defaultValue={sub.name} required className={`${field} col-span-2`}/>
-                <input name="amount" defaultValue={sub.amount} type="number" step="0.01" placeholder="Amount" required className={field} />
-                <input name="billingDate" type="date" defaultValue={new Date(sub.nextBillingDate).toISOString().split("T")[0]} required className={field} />                
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 max-w-md">
+            <div className="sm:col-span-2">
+                <label className="block text-xs text-stone-500 dark:text-stone-400 mb-1">Name</label>
+                <input name="name" defaultValue={sub.name} required className={field} />
+            </div>
+            <div>
+                <label className="block text-xs text-stone-500 dark:text-stone-400 mb-1">Amount</label>
+                <input name="amount" defaultValue={sub.amount} type="number" step="0.01" required className={field} />
+            </div>
+            <div>
+                <label className="block text-xs text-stone-500 dark:text-stone-400 mb-1">Next billing date</label>
+                <input name="billingDate" type="date" defaultValue={new Date(sub.nextBillingDate).toISOString().split("T")[0]} required className={`${field} min-w-0 max-w-full appearance-none`} />
+            </div>
+            <div>
+                <label className="block text-xs text-stone-500 dark:text-stone-400 mb-1">Billing cycle</label>
                 <select name="cycle" defaultValue={sub.cycle} className={field}>
-                    <option value="weekly">weekly</option>
-                    <option value="monthly">monthly</option>
-                    <option value="quarterly">quarterly</option>
-                    <option value="yearly">yearly</option>
+                <option value="weekly">weekly</option>
+                <option value="monthly">monthly</option>
+                <option value="quarterly">quarterly</option>
+                <option value="yearly">yearly</option>
                 </select>
+            </div>
+            <div>
+                <label className="block text-xs text-stone-500 dark:text-stone-400 mb-1">Category</label>
                 <select name="category" defaultValue={sub.category} className={field}>
-                    <option value="Entertainment">Entertainment</option>
-                    <option value="Gaming">Gaming</option>
-                    <option value="Productivity & Software">Productivity & Software</option>
-                    <option value="Health & Fitness">Health & Fitness</option>
-                    <option value="Shopping">Shopping</option>
-                    <option value="Education">Education</option>
-                    <option value="Utilities">Utilities</option>
-                    <option value="Other">Other</option>
+                <option value="Entertainment">Entertainment</option>
+                <option value="Gaming">Gaming</option>
+                <option value="Productivity & Software">Productivity & Software</option>
+                <option value="Health & Fitness">Health & Fitness</option>
+                <option value="Shopping">Shopping</option>
+                <option value="Education">Education</option>
+                <option value="Utilities">Utilities</option>
+                <option value="Other">Other</option>
                 </select>
-                </div>
+            </div>
+            </div>
                 <button
                 type="submit"
                 className="mt-4 w-full rounded-lg bg-emerald-700 px-4 py-2.5 text-sm font-medium text-white transition hover:bg-emerald-800 sm:w-auto dark:bg-emerald-600 dark:hover:bg-emerald-500">
