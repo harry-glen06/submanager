@@ -7,6 +7,7 @@ import { redirect } from "next/navigation";
 import SignOutButton from "./sign-out-button";
 import ThemeToggle from "./theme-toggle";
 import SubscriptionRow from "./subscription-row";
+import { nextOccurrence } from "@/lib/recurrence";
 
 export const dynamic = "force-dynamic";
 
@@ -29,6 +30,14 @@ export default async function Home() {
 
   const subscriptions = await prisma.subscription.findMany({
     where: { userId: session.user.id },
+  });
+
+  const sorted = [...subscriptions].sort((a, b) => {
+    const dateA = nextOccurrence(new Date(a.nextBillingDate), a.cycle as Cycle);
+    const dateB = nextOccurrence(new Date(b.nextBillingDate), b.cycle as Cycle);
+    const dateDiff = dateA.getTime() - dateB.getTime();
+    if (dateDiff !== 0) return dateDiff;                                                              // dates differ → date decides
+    return (monthlyCost(b.amount, b.cycle as Cycle) - monthlyCost(a.amount, a.cycle as Cycle));       // dates tie → price breaks it
   });
 
   const totalMonthly = subscriptions.reduce(
@@ -76,7 +85,7 @@ export default async function Home() {
           </div>
         ) : (
           <ul className="divide-y divide-stone-100 overflow-hidden rounded-2xl border border-stone-200 bg-white shadow-sm dark:divide-stone-800 dark:border-stone-800 dark:bg-stone-900">
-            {subscriptions.map((sub) => (
+            {sorted.map((sub) => (
               <SubscriptionRow key={sub.id} sub={sub} />
             ))}
           </ul>
