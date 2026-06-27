@@ -3,10 +3,29 @@ import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import SignOutButton from "../sign-out-button";
 import ThemeToggle from "../theme-toggle";
+import { prisma } from "@/lib/prisma";
+import { Cycle, monthlyCost } from "@/lib/recurrence";
+import CategoryChart from "../category-chart";
 
 export default async function AnalyticsPage() {
     const session = await auth.api.getSession({ headers: await headers() });
     if (!session) redirect("/sign-in");
+
+    const subscriptions = await prisma.subscription.findMany({
+        where: { userId: session.user.id },
+    });
+
+    const byCategory = subscriptions.reduce((acc, sub) => {
+        const cost = monthlyCost(sub.amount, sub.cycle as Cycle);
+        acc[sub.category] = (acc[sub.category] || 0) + cost
+        return acc
+    }, {} as Record<string, number>);
+
+    const chartData = Object.entries(byCategory).map((pair) => {
+            return { name: pair[0], value: pair[1] };
+    })
+    
+    
     return (
         <main className="min-h-screen bg-stone-50 text-stone-900 dark:bg-stone-950 dark:text-stone-100">
             <div className="mx-auto max-w-2xl px-6 pt-10 pb-28">
@@ -22,6 +41,7 @@ export default async function AnalyticsPage() {
                     <SignOutButton />
                     </div>
                 </div>
+                <CategoryChart data={chartData} />
             </div>
         </main>
     );
