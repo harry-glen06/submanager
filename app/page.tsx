@@ -49,7 +49,7 @@ export default async function Home() {
 
   return (
     <main className="min-h-screen bg-stone-50 text-stone-900 dark:bg-stone-950 dark:text-stone-100">
-      <div className="mx-auto max-w-2xl px-6 py-10">
+      <div className="mx-auto max-w-2xl px-6 pt-10 pb-28">
 
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
