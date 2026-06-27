@@ -8,7 +8,7 @@ import { daysUntil } from "@/lib/recurrence";
 import { nextOccurrence } from "@/lib/recurrence";
 
 
-type Sub = { id: number; name: string; amount: number; cycle: string; nextBillingDate: Date };
+type Sub = { id: number; name: string; amount: number; cycle: string; nextBillingDate: Date; category: string};
 const aud = new Intl.NumberFormat("en-AU", { style: "currency", currency: "AUD" });
 const money = (n: number) => aud.format(n);
 const cycleWord: Record<Cycle, string> = {
@@ -43,15 +43,25 @@ export default function SubscriptionRow({ sub }: { sub: Sub }) {
             setIsEditing(false);
           }}
         >
-                <div className="flex flex-col gap-3 sm:flex-row">
-                <input name="name" defaultValue={sub.name} required className={field} />
-                <input name="amount" defaultValue={sub.amount} type="number" step="0.01" placeholder="Amount" required className={`${field} sm:w-32`} />
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 max-w-md">
+                <input name="name" defaultValue={sub.name} required className={`${field} col-span-2`}/>
+                <input name="amount" defaultValue={sub.amount} type="number" step="0.01" placeholder="Amount" required className={field} />
                 <input name="billingDate" type="date" defaultValue={new Date(sub.nextBillingDate).toISOString().split("T")[0]} required className={field} />                
-                <select name="cycle" defaultValue={sub.cycle} className={`${field} sm:w-40`}>
+                <select name="cycle" defaultValue={sub.cycle} className={field}>
                     <option value="weekly">weekly</option>
                     <option value="monthly">monthly</option>
                     <option value="quarterly">quarterly</option>
                     <option value="yearly">yearly</option>
+                </select>
+                <select name="category" defaultValue={sub.category} className={field}>
+                    <option value="Entertainment">Entertainment</option>
+                    <option value="Gaming">Gaming</option>
+                    <option value="Productivity & Software">Productivity & Software</option>
+                    <option value="Health & Fitness">Health & Fitness</option>
+                    <option value="Shopping">Shopping</option>
+                    <option value="Education">Education</option>
+                    <option value="Utilities">Utilities</option>
+                    <option value="Other">Other</option>
                 </select>
                 </div>
                 <button

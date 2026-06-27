@@ -13,13 +13,14 @@ datasource db {
 }
 
 model Subscription {
-  id     Int    @id @default(autoincrement())
-  name   String
-  amount Float
-  cycle  String
-  userId String
-  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
-  nextBillingDate DateTime @default(now())
+  id               Int       @id @default(autoincrement())
+  name            String
+  amount          Float
+  cycle           String
+  userId          String
+  user            User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  nextBillingDate DateTime  @default(now())
+  category        String    @default("Other")
 }
 
 model User {

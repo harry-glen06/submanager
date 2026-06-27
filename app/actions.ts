@@ -25,9 +25,10 @@ export async function createSubscription(formData: FormData) {
   const amount = parseFloat(formData.get("amount") as string);
   const cycle = formData.get("cycle") as Cycle;
   const nextBillingDate = new Date(formData.get("billingDate") as string);
+const category = formData.get("category") as string;
 
   await prisma.subscription.create({
-    data: { name, amount, cycle, nextBillingDate, userId: session.user.id },
+    data: { name, amount, cycle, nextBillingDate, category, userId: session.user.id },
   });
 
   revalidatePath("/");
@@ -41,12 +42,14 @@ export async function updateSubscription(id: number, formData: FormData) {
   const amount = parseFloat(formData.get("amount") as string);
   const cycle = formData.get("cycle") as Cycle;
   const nextBillingDate = new Date(formData.get("billingDate") as string);
+  const category = formData.get("category") as string;
+
 
   const userId = session.user.id
 
   await prisma.subscription.updateMany({
     where: { id,  userId },
-    data: { name, amount, cycle, nextBillingDate },
+    data: { name, amount, cycle, nextBillingDate, category },
   });
 
   revalidatePath("/");
