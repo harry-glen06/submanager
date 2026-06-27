@@ -57,8 +57,8 @@ export default async function Home() {
           </div>
           <div className="flex items-center gap-3 text-sm text-stone-500 dark:text-stone-400">
             <ThemeToggle />
-            <span>Signed in as {session.user.name}</span>
-            <span className="text-stone-300 dark:text-stone-600">·</span>
+            <span className="hidden sm:inline" >Signed in as {session.user.name}</span>
+            <span className="hidden sm:inline text-stone-300 dark:text-stone-600">·</span>
             <SignOutButton />
           </div>
         </div>

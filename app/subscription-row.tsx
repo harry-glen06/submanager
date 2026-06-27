@@ -46,7 +46,8 @@ export default function SubscriptionRow({ sub }: { sub: Sub }) {
                 <div className="flex flex-col gap-3 sm:flex-row">
                 <input name="name" defaultValue={sub.name} required className={field} />
                 <input name="amount" defaultValue={sub.amount} type="number" step="0.01" placeholder="Amount" required className={`${field} sm:w-32`} />
-                <input name="billingDate" type="date" defaultValue={new Date(sub.nextBillingDate).toISOString().split("T")[0]} required className={field} />                <select name="cycle" defaultValue={sub.cycle} className={`${field} sm:w-40`}>
+                <input name="billingDate" type="date" defaultValue={new Date(sub.nextBillingDate).toISOString().split("T")[0]} required className={field} />                
+                <select name="cycle" defaultValue={sub.cycle} className={`${field} sm:w-40`}>
                     <option value="weekly">weekly</option>
                     <option value="monthly">monthly</option>
                     <option value="quarterly">quarterly</option>
@@ -70,9 +71,9 @@ const next = daysUntil(nextOccurrence(new Date(sub.nextBillingDate), sub.cycle a
     return (
         <li className="flex items-center gap-4 px-5 py-4">
         <div className="min-w-0 flex-1">
-            <div className="flex items-center gap-2">
-            <span className="truncate font-medium">{sub.name}</span>
-            <span className="rounded-full bg-stone-100 px-2 py-0.5 text-xs font-medium uppercase tracking-wide text-stone-500 dark:bg-stone-800 dark:text-stone-400">
+            <div className="flex flex-col gap-1 sm:flex-row sm:items-center sm:gap-2">
+            <span className="font-medium">{sub.name}</span>
+            <span className="self-start rounded-full bg-stone-100 px-2 py-0.5 text-xs font-medium uppercase tracking-wide text-stone-500 dark:bg-stone-800 dark:text-stone-400">
                 {sub.cycle}
             </span>
             </div>
@@ -82,7 +83,7 @@ const next = daysUntil(nextOccurrence(new Date(sub.nextBillingDate), sub.cycle a
             <div className="mt-0.5 text-xs text-stone-400 dark:text-stone-500">
                 {dueLabel(next)}
             </div>
-            <div className="mt-0.5 font-mono text-xs tabular-nums text-stone-400 dark:text-stone-500">
+            <div className="mt-0.5 font-mono text-xs tabular-nums text-stone-400 dark:text-stone-500 hidden sm:block">
             {money(sub.amount)} / {cycleWord[sub.cycle as Cycle]}
             </div>
         </div>
