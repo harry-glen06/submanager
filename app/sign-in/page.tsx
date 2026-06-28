@@ -3,13 +3,23 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { authClient } from "@/lib/auth-client";
+import { useSearchParams } from "next/navigation";
+import { Suspense } from "react";
 
-const field =
+function SignInForm() {
+  const field =
   "w-full rounded-lg border border-stone-200 bg-white px-3 py-2 text-sm text-stone-900 placeholder-stone-400 focus:border-emerald-600 focus:outline-none focus:ring-1 focus:ring-emerald-600 dark:border-stone-700 dark:bg-stone-900 dark:text-stone-100 dark:placeholder-stone-500";
 
-export default function SignInPage() {
   const router = useRouter();
   const [error, setError] = useState("");
+  const searchParams = useSearchParams();       
+  const urlError = searchParams.get("error");
+  const errorMessage =
+  urlError === "account_not_linked"
+    ? "You already have an account with this email. Please sign in with your password instead."
+    : urlError
+    ? "Something went wrong signing in. Please try again."
+    : null  
 
   async function handleSignIn(formData: FormData) {
     const { error } = await authClient.signIn.email({
@@ -42,11 +52,33 @@ export default function SignInPage() {
           </form>
           {error && <p className="mt-3 text-sm text-red-500 dark:text-red-400">{error}</p>}
         </div>
+          <button
+            type="button"
+              onClick={async () => {
+                await authClient.signIn.social({
+                  provider: "google",
+                  callbackURL: "/",
+                  errorCallbackURL: "/sign-in",
+                });
+              }}
+            className="mt-4 w-full rounded-lg bg-slate-700 px-4 py-2.5 text-sm font-medium text-white transition hover:bg-slate-800 dark:bg-slate-600 dark:hover:bg-slate-500"
+            >
+            Sign in with Google
+          </button>
+          {errorMessage && <p className="text-sm text-red-500 dark:text-red-400">{errorMessage}</p>}
         <p className="mt-6 text-center text-sm text-stone-500 dark:text-stone-400">
           Need an account?{" "}
           <a href="/sign-up" className="font-medium text-emerald-700 hover:text-emerald-800 dark:text-emerald-500 dark:hover:text-emerald-400">Sign up</a>
         </p>
       </div>
     </main>
+  )
+}
+
+export default function SignInPage() {
+  return (
+    <Suspense>
+      <SignInForm />
+    </Suspense>
   );
 }

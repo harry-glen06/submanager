@@ -44,6 +44,19 @@ export default function SignUpPage() {
           </form>
           {error && <p className="mt-3 text-sm text-red-500 dark:text-red-400">{error}</p>}
         </div>
+        <button
+          type="button"
+            onClick={async () => {
+              await authClient.signIn.social({
+                provider: "google",
+                callbackURL: "/",
+                errorCallbackURL: "/sign-in"
+              });
+            }}
+          className="mt-4 w-full rounded-lg bg-slate-700 px-4 py-2.5 text-sm font-medium text-white transition hover:bg-slate-800 dark:bg-slate-600 dark:hover:bg-slate-500"
+          >
+          Sign up with Google
+        </button>
         <p className="mt-6 text-center text-sm text-stone-500 dark:text-stone-400">
           Already have an account?{" "}
           <a href="/sign-in" className="font-medium text-emerald-700 hover:text-emerald-800 dark:text-emerald-500 dark:hover:text-emerald-400">Sign in</a>
