@@ -13,6 +13,7 @@ const aud = new Intl.NumberFormat("en-AU", { style: "currency", currency: "AUD" 
 const money = (n: number) => aud.format(n);
 const cycleWord: Record<Cycle, string> = {
     weekly: "week",
+    fortnightly: "fortnightly",
     monthly: "month",
     quarterly: "quarter",
     yearly: "year",
@@ -60,6 +61,7 @@ export default function SubscriptionRow({ sub }: { sub: Sub }) {
                 <label className="block text-xs text-stone-500 dark:text-stone-400 mb-1">Billing cycle</label>
                 <select name="cycle" defaultValue={sub.cycle} className={field}>
                 <option value="weekly">weekly</option>
+                <option value="fortnightly">fortnightly</option>
                 <option value="monthly">monthly</option>
                 <option value="quarterly">quarterly</option>
                 <option value="yearly">yearly</option>

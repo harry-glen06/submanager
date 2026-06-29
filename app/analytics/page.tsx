@@ -6,6 +6,9 @@ import ThemeToggle from "../theme-toggle";
 import { prisma } from "@/lib/prisma";
 import { Cycle, monthlyCost } from "@/lib/recurrence";
 import CategoryChart from "../category-chart";
+import { nextOccurrence } from "@/lib/recurrence";
+
+
 
 export default async function AnalyticsPage() {
     const session = await auth.api.getSession({ headers: await headers() });
@@ -24,6 +27,22 @@ export default async function AnalyticsPage() {
     const chartData = Object.entries(byCategory).map((pair) => {
             return { name: pair[0], value: pair[1] };
     })
+
+
+    const aud = new Intl.NumberFormat("en-AU", { style: "currency", currency: "AUD" });
+    const money = (n: number) => aud.format(n);
+
+    const totalMonthly = subscriptions.reduce(
+    (acc, current) => acc + monthlyCost(current.amount, current.cycle as Cycle), 0);
+
+    const sorted = [...subscriptions].sort((a, b) => {
+        const dateA = nextOccurrence(new Date(a.nextBillingDate), a.cycle as Cycle);
+        const dateB = nextOccurrence(new Date(b.nextBillingDate), b.cycle as Cycle);
+        const dateDiff = dateA.getTime() - dateB.getTime();
+        if (dateDiff !== 0) return dateDiff;                                                              // dates differ → date decides
+        return (monthlyCost(b.amount, b.cycle as Cycle) - monthlyCost(a.amount, a.cycle as Cycle));       // dates tie → price breaks it
+    });
+
     
     
     return (
@@ -41,7 +60,20 @@ export default async function AnalyticsPage() {
                     <SignOutButton />
                     </div>
                 </div>
-                <CategoryChart data={chartData} />
+                <div className="mt-12">
+                    <p className="text-xs font-medium uppercase tracking-widest text-stone-400 dark:text-stone-500">
+                        Your monthly spend
+                    </p>
+                    <p className="mt-3 font-mono text-6xl font-semibold tabular-nums tracking-tight">
+                        {money(totalMonthly)}
+                    </p>
+                </div>
+                <p className="mt-12 mb-3 text-xs font-medium uppercase tracking-widest text-stone-400 dark:text-stone-500">
+                    Spend by category
+                </p>
+                <div className="rounded-2xl border border-stone-200 bg-white p-5 shadow-sm dark:border-stone-800 dark:bg-stone-900">
+                    <CategoryChart data={chartData} />
+                </div>
             </div>
         </main>
     );

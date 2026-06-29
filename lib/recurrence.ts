@@ -1,9 +1,13 @@
-export type Cycle = "weekly" | "monthly" | "quarterly" | "yearly";
+export type Cycle = "weekly" | "fortnightly" | "monthly" | "quarterly" | "yearly";
 
 export function monthlyCost(amount: number, cycle: Cycle): number {
     if (cycle === "weekly") {
         // weekly amount converted to monthly
         const calcAmount = (amount * 52) / 12;
+        return calcAmount;
+    } else if (cycle === "fortnightly") {
+        // fortnightly amount converted to monthly
+        const calcAmount = (amount * 26) / 12;
         return calcAmount;
     } else if (cycle === "monthly") {
         return amount;
@@ -34,6 +38,8 @@ export function nextOccurrence(date: Date, cycle: Cycle): Date {
     while (d < now) {
         if (cycle === 'weekly') {
             d.setDate(d.getDate() + 7)
+         } else if (cycle === 'fortnightly'){
+            d.setDate(d.getDate() + 14) 
         } else if (cycle === 'monthly'){
             d.setMonth(d.getMonth() + 1)
         } else if (cycle === 'quarterly') {

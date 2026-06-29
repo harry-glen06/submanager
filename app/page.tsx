@@ -17,6 +17,7 @@ const money = (n: number) => aud.format(n);
 
 const cycleWord: Record<Cycle, string> = {
   weekly: "week",
+  fortnightly: "fortnightly",
   monthly: "month",
   quarterly: "quarter",
   yearly: "year",
@@ -114,6 +115,7 @@ export default async function Home() {
                 <label className="block text-xs text-stone-500 dark:text-stone-400 mb-1">Cycle</label>
                 <select name="cycle" className={field}>
                   <option value="weekly">weekly</option>
+                  <option value="fortnightly">fortnightly</option>
                   <option value="monthly">monthly</option>
                   <option value="quarterly">quarterly</option>
                   <option value="yearly">yearly</option>
