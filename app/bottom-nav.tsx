@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Home, BarChart3 } from "lucide-react";
+import { Home, BarChart3, Settings } from "lucide-react";
 
 export default function BottomNav() {
     const pathname = usePathname();
@@ -20,6 +20,12 @@ export default function BottomNav() {
         pathname === "/analytics" ? "text-emerald-700 dark:text-emerald-500" : "text-stone-500"}`}>
         <BarChart3 size={20} />
         Analytics
+        </Link>
+
+        <Link href="/settings" className={`flex-1 flex flex-col items-center gap-1 py-3 text-xs ${
+        pathname === "/settings" ? "text-emerald-700 dark:text-emerald-500" : "text-stone-500"}`}>
+        <Settings size={20} />
+        Settings
         </Link>
       </div>
     </nav>

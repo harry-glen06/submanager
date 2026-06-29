@@ -5,6 +5,7 @@ import { revalidatePath } from "next/cache";
 import { Cycle } from "@/lib/recurrence";
 import { auth } from "@/lib/auth";
 import { headers } from "next/headers";
+import { redirect } from "next/navigation";
 
 export async function deleteSubscription(id: number) {
   const session = await auth.api.getSession({ headers: await headers() });
@@ -53,4 +54,13 @@ export async function updateSubscription(id: number, formData: FormData) {
   });
 
   revalidatePath("/");
+}
+
+export async function deleteAccount() {
+  const session = await auth.api.getSession({ headers: await headers() });
+  if (!session) throw new Error("Not authenticated");
+
+  await prisma.user.delete({ where: { id: session.user.id } })
+
+  redirect("/sign-in");
 }
